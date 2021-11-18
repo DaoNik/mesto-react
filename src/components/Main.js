@@ -1,6 +1,7 @@
 import React from "react";
 import avatar from "../images/Avatar.png";
 import api from "../utils/api";
+import Card from "./Card";
 
 function Main(props) {
   const [userName, setUserName] = React.useState("Жак-Ив Кусто");
@@ -8,14 +9,26 @@ function Main(props) {
     "Исследователь океана"
   );
   const [userAvatar, setUserAvatar] = React.useState(avatar);
+  const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setUserName(data.name);
-        setUserDescription(data.about);
-        setUserAvatar(data.avatar);
+    Promise.all([api.getUserInfo(), api.addCards()])
+      .then((res) => {
+        const user = res[0];
+        const newCards = res[1];
+        setUserName(user.name);
+        setUserDescription(user.about);
+        setUserAvatar(user.avatar);
+        return newCards;
+      })
+      .then((newCards) => {
+        setCards(
+          <ul className="gallery__cards">
+            {newCards.map((card) => {
+              return <Card key={card._id} card={card} />;
+            })}
+          </ul>
+        );
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -50,9 +63,7 @@ function Main(props) {
         ></button>
       </section>
 
-      <section className="gallery">
-        <ul className="gallery__cards"></ul>
-      </section>
+      <section className="gallery">{cards}</section>
     </main>
   );
 }
