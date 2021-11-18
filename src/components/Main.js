@@ -1,7 +1,6 @@
 import React from "react";
 import avatar from "../images/Avatar.png";
 import api from "../utils/api";
-console.log(api.getUserInfo());
 
 function Main(props) {
   const [userName, setUserName] = React.useState("Жак-Ив Кусто");
@@ -9,6 +8,19 @@ function Main(props) {
     "Исследователь океана"
   );
   const [userAvatar, setUserAvatar] = React.useState(avatar);
+
+  React.useEffect(() => {
+    api
+      .getUserInfo()
+      .then((data) => {
+        setUserName(data.name);
+        setUserDescription(data.about);
+        setUserAvatar(data.avatar);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }, []);
 
   return (
     <main>
