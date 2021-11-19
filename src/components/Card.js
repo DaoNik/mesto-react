@@ -1,10 +1,19 @@
 import React from "react";
 
-function Card({ card }) {
+function Card({ card, onCardClick }) {
+  function handleClick() {
+    onCardClick(card);
+  }
+
   return (
     <li className="gallery__card">
       <h2 className="gallery__card-title">{card.name}</h2>
-      <img src={card.link} alt={card.name} className="gallery__card-img" />
+      <img
+        onClick={handleClick}
+        src={card.link}
+        alt={card.name}
+        className="gallery__card-img"
+      />
       <button
         type="button"
         className="gallery__card-btn"

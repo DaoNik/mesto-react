@@ -12,6 +12,11 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState({
+    isOpen: false,
+    name: "",
+    link: "",
+  });
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -25,10 +30,23 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  function handleCardClick(card) {
+    setSelectedCard({
+      isOpen: true,
+      name: card.name,
+      link: card.link,
+    });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setSelectedCard({
+      isOpen: false,
+      name: "",
+      link: "",
+    });
   }
 
   return (
@@ -39,9 +57,12 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
+        onCardClick={handleCardClick}
       />
 
       <Footer />
+
+      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
       <PopupWithForm
         name={"edit"}
@@ -135,38 +156,6 @@ function App() {
           </>
         }
       />
-
-      <div className="popup popup_confirm">
-        <div className="popup__container popup__container_confirm">
-          <h2 className="popup__title popup__title_confirm">Вы уверены?</h2>
-          <button type="button" className="popup__btn popup__btn_confirm">
-            Да
-          </button>
-          <button
-            type="button"
-            className="popup__btn-closed"
-            aria-label="Кнопка закрытия всплывающего окна"
-          ></button>
-        </div>
-      </div>
-
-      <template id="template-card">
-        <li className="gallery__card">
-          <h2 className="gallery__card-title"></h2>
-          <img src="#" alt="#" className="gallery__card-img" />
-          <button
-            type="button"
-            className="gallery__card-btn"
-            aria-label="Кнопка лайка"
-            data-before="0"
-          ></button>
-          <button
-            type="button"
-            className="gallery__card-btn-trash"
-            aria-label="Кнопка удаления карточки"
-          ></button>
-        </li>
-      </template>
     </>
   );
 }

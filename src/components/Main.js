@@ -25,7 +25,13 @@ function Main(props) {
         setCards(
           <ul className="gallery__cards">
             {newCards.map((card) => {
-              return <Card key={card._id} card={card} />;
+              return (
+                <Card
+                  key={card._id}
+                  card={card}
+                  onCardClick={props.onCardClick}
+                />
+              );
             })}
           </ul>
         );
