@@ -22,19 +22,7 @@ function Main(props) {
         return newCards;
       })
       .then((newCards) => {
-        setCards(
-          <ul className="gallery__cards">
-            {newCards.map((card) => {
-              return (
-                <Card
-                  key={card._id}
-                  card={card}
-                  onCardClick={props.onCardClick}
-                />
-              );
-            })}
-          </ul>
-        );
+        setCards(newCards);
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -69,7 +57,19 @@ function Main(props) {
         ></button>
       </section>
 
-      <section className="gallery">{cards}</section>
+      <section className="gallery">
+        <ul className="gallery__cards">
+          {cards.map((card) => {
+            return (
+              <Card
+                key={card._id}
+                card={card}
+                onCardClick={props.onCardClick}
+              />
+            );
+          })}
+        </ul>
+      </section>
     </main>
   );
 }
