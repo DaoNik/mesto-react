@@ -1,9 +1,8 @@
 import React from "react";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
-function Card({ card, onCardClick, onCardLike }) {
+function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
-  const [likesLength, setLikesLength] = React.useState(card.likes.length);
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
   const isOwn = card.owner._id === currentUser._id;
 
@@ -11,22 +10,16 @@ function Card({ card, onCardClick, onCardLike }) {
     isOwn ? "" : "gallery__card-btn-trash_hidden"
   }`;
 
-  // // Создаём переменную, которую после зададим в `className` для кнопки лайка
-  // const cardLikeButtonClassName = `${
-  //   isLiked ? "gallery__card-btn_active" : ""
-  // }`;
-
   function handleClick() {
     onCardClick(card);
   }
 
   function handleLikeClick() {
     onCardLike(card);
-    if (isLiked) {
-      setLikesLength(likesLength - 1);
-    } else {
-      setLikesLength(likesLength + 1);
-    }
+  }
+
+  function handleDeleteCard() {
+    onCardDelete(card);
   }
 
   return (
@@ -44,13 +37,14 @@ function Card({ card, onCardClick, onCardLike }) {
           isLiked ? "gallery__card-btn_active" : ""
         }`}
         aria-label="Кнопка лайка"
-        data-before={likesLength}
+        data-before={card.likes.length}
         onClick={handleLikeClick}
       ></button>
       <button
         type="button"
         className={cardDeleteButtonClassName}
         aria-label="Кнопка удаления карточки"
+        onClick={handleDeleteCard}
       ></button>
     </li>
   );

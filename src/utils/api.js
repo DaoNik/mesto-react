@@ -89,8 +89,18 @@ class Api {
     });
   }
 
-  deleteCard(cardId, renderDeleting, button) {
-    renderDeleting(true, button);
+  changeLikeCardStatus(cardId, notIsLiked) {
+    return fetch(`${this._url}cards/likes/${cardId}`, {
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify({}),
+    }).then((res) => {
+      return this._checkRequest(res);
+    });
+  }
+
+  deleteCard(cardId /*renderDeleting, button*/) {
+    // renderDeleting(true, button);
     return fetch(`${this._url}cards/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
