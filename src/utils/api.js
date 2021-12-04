@@ -58,8 +58,8 @@ class Api {
     });
   }
 
-  updateAvatar(avatar, renderSaving, button) {
-    renderSaving(true, button);
+  updateAvatar(avatar /*, renderSaving, button*/) {
+    // renderSaving(true, button);
     return fetch(`${this._url}users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,

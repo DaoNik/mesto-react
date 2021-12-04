@@ -9,6 +9,7 @@ import avatar from "../images/Avatar.png";
 import PopupWithForm from "./PopupWithForm";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
@@ -26,6 +27,58 @@ function App() {
     about: "Исследователь океана",
     avatar: avatar,
   });
+  const [cards, setCards] = React.useState([]);
+
+  React.useEffect(() => {
+    api
+      .addCards()
+      .then((newCards) => {
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }, []);
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    if (isLiked) {
+      api
+        .deleteLike(card._id)
+        .then((newCard) => {
+          setCards((state) =>
+            state.map((c) => (c._id === card._id ? newCard : c))
+          );
+        })
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        });
+    } else {
+      api
+        .addLike(card._id)
+        .then((newCard) => {
+          setCards((state) =>
+            state.map((c) => (c._id === card._id ? newCard : c))
+          );
+        })
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        });
+    }
+  }
+
+  function handleDeleteCard(card) {
+    api
+      .deleteCard(card._id)
+      .then((deleteCard) => {
+        console.log(deleteCard);
+        setCards((state) => state.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }
 
   React.useEffect(() => {
     api
@@ -64,6 +117,12 @@ function App() {
     });
   }
 
+  function handleUpdateAvatar({ avatar }) {
+    api.updateAvatar(avatar).catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -84,6 +143,9 @@ function App() {
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
         onCardClick={handleCardClick}
+        cards={cards}
+        onCardLike={handleCardLike}
+        onCardDelete={handleDeleteCard}
       />
 
       <Footer />
@@ -94,6 +156,12 @@ function App() {
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
         onUpdateUser={handleUpdateUser}
+      />
+
+      <EditAvatarPopup
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}
+        onUpdateAvatar={handleUpdateAvatar}
       />
 
       <PopupWithForm
@@ -124,26 +192,6 @@ function App() {
         <span className="popup__error" id="place-link-error"></span>
         <button type="submit" className="popup__btn popup__btn-add">
           Создать
-        </button>
-      </PopupWithForm>
-
-      <PopupWithForm
-        name={"update-avatar"}
-        title={"Обновить аватар"}
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-      >
-        <input
-          className="popup__input"
-          id="avatar-link"
-          name="link"
-          type="url"
-          placeholder="Ссылка на картинку"
-          required
-        />
-        <span className="popup__error" id="avatar-link-error"></span>
-        <button type="submit" className="popup__btn popup__btn-update">
-          Сохранить
         </button>
       </PopupWithForm>
     </CurrentUserContext.Provider>
