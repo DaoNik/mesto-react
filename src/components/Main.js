@@ -1,26 +1,31 @@
 import React from "react";
-import avatar from "../images/Avatar.png";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 import api from "../utils/api";
 import Card from "./Card";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState("Жак-Ив Кусто");
-  const [userDescription, setUserDescription] = React.useState(
-    "Исследователь океана"
-  );
-  const [userAvatar, setUserAvatar] = React.useState(avatar);
+  const currentUser = React.useContext(CurrentUserContext);
   const [cards, setCards] = React.useState([]);
+  const [isLiked, setIsLiked] = React.useState(false);
+
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    if (isLiked) {
+      api.deleteLike(card._id).catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+      setIsLiked(!isLiked);
+    } else {
+      api.addLike(card._id).catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+      setIsLiked(!isLiked);
+    }
+  }
 
   React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.addCards()])
-      .then((res) => {
-        const user = res[0];
-        const newCards = res[1];
-        setUserName(user.name);
-        setUserDescription(user.about);
-        setUserAvatar(user.avatar);
-        return newCards;
-      })
+    api
+      .addCards()
       .then((newCards) => {
         setCards(newCards);
       })
@@ -33,8 +38,8 @@ function Main(props) {
     <main>
       <section className="profile">
         <div className="profile__wrapper">
-          <h1 className="profile__title">{userName}</h1>
-          <p className="profile__subtitle">{userDescription}</p>
+          <h1 className="profile__title">{currentUser.name}</h1>
+          <p className="profile__subtitle">{currentUser.about}</p>
           <button
             type="button"
             onClick={props.onEditProfile}
@@ -45,7 +50,7 @@ function Main(props) {
         <div className="profile__container-avatar" onClick={props.onEditAvatar}>
           <img
             className="profile__avatar"
-            src={userAvatar}
+            src={currentUser.avatar}
             alt="Аватар профиля"
           />
         </div>
@@ -65,6 +70,7 @@ function Main(props) {
                 key={card._id}
                 card={card}
                 onCardClick={props.onCardClick}
+                onCardLike={handleCardLike}
               />
             );
           })}

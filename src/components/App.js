@@ -1,10 +1,13 @@
 import React from "react";
 import "../index.css";
 import Header from "./Header";
+import api from "../utils/api";
 import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
+import avatar from "../images/Avatar.png";
 import PopupWithForm from "./PopupWithForm";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
@@ -17,6 +20,22 @@ function App() {
     name: "",
     link: "",
   });
+  const [currentUser, setCurrentUser] = React.useState({
+    name: "Жак-Ив Кусто",
+    about: "Исследователь океана",
+    avatar: avatar,
+  });
+
+  React.useEffect(() => {
+    api
+      .getUserInfo()
+      .then((user) => {
+        setCurrentUser(user);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }, []);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -50,7 +69,7 @@ function App() {
   }
 
   return (
-    <>
+    <CurrentUserContext.Provider value={currentUser}>
       <Header />
 
       <Main
@@ -147,7 +166,7 @@ function App() {
           Сохранить
         </button>
       </PopupWithForm>
-    </>
+    </CurrentUserContext.Provider>
   );
 }
 
