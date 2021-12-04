@@ -10,6 +10,7 @@ import PopupWithForm from "./PopupWithForm";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
@@ -123,6 +124,17 @@ function App() {
     });
   }
 
+  function handleAddPlace(name, link) {
+    api
+      .addNewCard({ name, link, likes: 0 })
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -164,36 +176,11 @@ function App() {
         onUpdateAvatar={handleUpdateAvatar}
       />
 
-      <PopupWithForm
-        name={"add"}
-        title={"Новое место"}
+      <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-      >
-        <input
-          className="popup__input popup__input_value_place"
-          id="place"
-          name="name"
-          type="text"
-          placeholder="Название"
-          minLength="2"
-          maxLength="30"
-          required
-        />
-        <span className="popup__error" id="place-error"></span>
-        <input
-          className="popup__input popup__input_value_place-link"
-          id="place-link"
-          name="link"
-          type="url"
-          placeholder="Ссылка на картинку"
-          required
-        />
-        <span className="popup__error" id="place-link-error"></span>
-        <button type="submit" className="popup__btn popup__btn-add">
-          Создать
-        </button>
-      </PopupWithForm>
+        onAddPlace={handleAddPlace}
+      />
     </CurrentUserContext.Provider>
   );
 }

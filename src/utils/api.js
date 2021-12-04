@@ -43,8 +43,8 @@ class Api {
     });
   }
 
-  addNewCard({ name, link, likes }, renderCreating, button) {
-    renderCreating(true, button);
+  addNewCard({ name, link, likes } /*, renderCreating, button*/) {
+    // renderCreating(true, button);
     return fetch(`${this._url}cards`, {
       method: "POST",
       headers: this._headers,
