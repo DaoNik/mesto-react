@@ -8,6 +8,7 @@ import ImagePopup from "./ImagePopup";
 import avatar from "../images/Avatar.png";
 import PopupWithForm from "./PopupWithForm";
 import CurrentUserContext from "../contexts/CurrentUserContext";
+import EditProfilePopup from "./EditProfilePopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
@@ -57,6 +58,12 @@ function App() {
     });
   }
 
+  function handleUpdateUser({ name, about }) {
+    api.addNewUserInfo(name, about).catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -83,38 +90,11 @@ function App() {
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-      <PopupWithForm
-        name={"edit"}
-        title={"Редактировать профиль"}
+      <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
-      >
-        <input
-          className="popup__input popup__input_value_name"
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Никнейм"
-          minLength="2"
-          maxLength="40"
-          required
-        />
-        <span className="popup__error" id="name-error"></span>
-        <input
-          className="popup__input popup__input_value_job"
-          id="job"
-          name="job"
-          type="text"
-          placeholder="Род деятельности"
-          minLength="2"
-          maxLength="200"
-          required
-        />
-        <span className="popup__error" id="job-error"></span>
-        <button type="submit" className="popup__btn">
-          Сохранить
-        </button>
-      </PopupWithForm>
+        onUpdateUser={handleUpdateUser}
+      />
 
       <PopupWithForm
         name={"add"}

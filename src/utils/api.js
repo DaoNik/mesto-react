@@ -21,13 +21,13 @@ class Api {
     });
   }
 
-  addNewUserInfo(nameInput, aboutInput) {
+  addNewUserInfo(name, description) {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
-        name: nameInput.value,
-        about: aboutInput.value,
+        name: name,
+        about: description,
       }),
     }).then((res) => {
       return this._checkRequest(res);
@@ -84,16 +84,6 @@ class Api {
     return fetch(`${this._url}cards/likes/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
-    }).then((res) => {
-      return this._checkRequest(res);
-    });
-  }
-
-  changeLikeCardStatus(cardId, notIsLiked) {
-    return fetch(`${this._url}cards/likes/${cardId}`, {
-      method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify({}),
     }).then((res) => {
       return this._checkRequest(res);
     });
