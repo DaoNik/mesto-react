@@ -6,7 +6,6 @@ import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import avatar from "../images/Avatar.png";
-import PopupWithForm from "./PopupWithForm";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -72,8 +71,7 @@ function App() {
   function handleDeleteCard(card) {
     api
       .deleteCard(card._id)
-      .then((deleteCard) => {
-        console.log(deleteCard);
+      .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
       })
       .catch((err) => {
@@ -113,15 +111,27 @@ function App() {
   }
 
   function handleUpdateUser({ name, about }) {
-    api.addNewUserInfo(name, about).catch((err) => {
-      console.log(`Ошибка: ${err}`);
-    });
+    api
+      .addNewUserInfo(name, about)
+      .then(() => {
+        setCurrentUser({ ...currentUser, name: name, about: about });
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
   }
 
   function handleUpdateAvatar({ avatar }) {
-    api.updateAvatar(avatar).catch((err) => {
-      console.log(`Ошибка: ${err}`);
-    });
+    api
+      .updateAvatar(avatar)
+      .then(() => {
+        setCurrentUser({ ...currentUser, avatar: avatar });
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
   }
 
   function handleAddPlace(name, link) {
@@ -129,6 +139,7 @@ function App() {
       .addNewCard({ name, link, likes: 0 })
       .then((newCard) => {
         setCards([newCard, ...cards]);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);

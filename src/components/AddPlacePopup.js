@@ -2,8 +2,8 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function AddPlacePopup(props) {
-  const [name, setName] = React.useState();
-  const [link, setLink] = React.useState();
+  const [name, setName] = React.useState("");
+  const [link, setLink] = React.useState("");
 
   function handleChangeName(e) {
     setName(e.target.value);
@@ -17,9 +17,13 @@ function AddPlacePopup(props) {
     e.preventDefault();
 
     props.onAddPlace(name, link);
-
-    props.onClose();
   }
+
+  React.useEffect(() => {
+    setName("");
+    setLink("");
+  }, [props.isOpen]);
+
   return (
     <PopupWithForm
       name={"add"}
@@ -27,6 +31,7 @@ function AddPlacePopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleAddPlaceSubmit}
+      submitButtonText={"Создать"}
     >
       <input
         className="popup__input popup__input_value_place"
@@ -36,6 +41,7 @@ function AddPlacePopup(props) {
         placeholder="Название"
         minLength="2"
         maxLength="30"
+        value={name}
         onChange={handleChangeName}
         required
       />
@@ -46,13 +52,11 @@ function AddPlacePopup(props) {
         name="link"
         type="url"
         placeholder="Ссылка на картинку"
+        value={link}
         onChange={handleChangeLink}
         required
       />
       <span className="popup__error" id="place-link-error"></span>
-      <button type="submit" className="popup__btn popup__btn-add">
-        Создать
-      </button>
     </PopupWithForm>
   );
 }

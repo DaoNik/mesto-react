@@ -1,18 +1,14 @@
 import React from "react";
-import CurrentUserContext from "../contexts/CurrentUserContext";
 import PopupWithForm from "./PopupWithForm";
 
 function EditAvatarPopup(props) {
-  const currentUser = React.useContext(CurrentUserContext);
-  const inputAvatarLink = React.useRef(currentUser.avatar);
+  const inputAvatarLink = React.useRef(null);
   function handleSubmit(e) {
     e.preventDefault();
     inputAvatarLink.current.focus();
     props.onUpdateAvatar({
       avatar: inputAvatarLink.current.value,
     });
-    currentUser.avatar = inputAvatarLink.current.value;
-    props.onClose();
   }
 
   return (
@@ -22,6 +18,7 @@ function EditAvatarPopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
+      submitButtonText={"Сохранить"}
     >
       <input
         className="popup__input"
@@ -33,9 +30,6 @@ function EditAvatarPopup(props) {
         required
       />
       <span className="popup__error" id="avatar-link-error"></span>
-      <button type="submit" className="popup__btn popup__btn-update">
-        Сохранить
-      </button>
     </PopupWithForm>
   );
 }

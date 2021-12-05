@@ -17,22 +17,18 @@ function EditProfilePopup(props) {
   }
 
   function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
 
-    // Передаём значения управляемых компонентов во внешний обработчик
     props.onUpdateUser({
       name,
       about: description,
     });
-
-    props.onClose();
   }
 
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, props.isOpen]);
 
   return (
     <PopupWithForm
@@ -41,6 +37,7 @@ function EditProfilePopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
+      submitButtonText={"Сохранить"}
     >
       <input
         className="popup__input popup__input_value_name"
@@ -68,9 +65,6 @@ function EditProfilePopup(props) {
         required
       />
       <span className="popup__error" id="job-error"></span>
-      <button type="submit" className="popup__btn">
-        Сохранить
-      </button>
     </PopupWithForm>
   );
 }
